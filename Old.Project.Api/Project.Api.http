@@ -1,0 +1,11 @@
+@Project.Api_HostAddress = http://localhost:5090
+
+GET {{Project.Api_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{Project.Api_HostAddress}}/todos/1
+Accept: application/json
+
+###

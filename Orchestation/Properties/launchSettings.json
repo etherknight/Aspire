@@ -1,0 +1,30 @@
+{
+  "profiles": {
+    "Debug": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21173",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22291"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "https://localhost:2048",
+      "nativeDebugging": true
+    },
+    "Debug (http)": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "DOTNET_ENVIRONMENT": "Development",
+        "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:19250",
+        "DOTNET_RESOURCE_SERVICE_ENDPOINT_URL": "http://localhost:20116"
+      },
+      "dotnetRunMessages": true,
+      "applicationUrl": "http://localhost:15096"
+    }
+  },
+  "$schema": "https://json.schemastore.org/launchsettings.json"
+}
