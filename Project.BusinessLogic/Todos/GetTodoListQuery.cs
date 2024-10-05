@@ -5,7 +5,7 @@ using Project.Core.DataLayer;
 
 namespace Project.BusinessLogic.Todos;
 
-internal sealed record GetTodoListQuery : IRequest<IEnumerable<TodoDTO>> { }
+internal sealed record GetTodoListQuery(int Start, int Limit) : IRequest<IEnumerable<TodoDTO>> { }
 
 internal class GetTodoListQueryHandler : IRequestHandler<GetTodoListQuery, IEnumerable<TodoDTO>>
 {
@@ -18,7 +18,10 @@ internal class GetTodoListQueryHandler : IRequestHandler<GetTodoListQuery, IEnum
 
     public async Task<IEnumerable<TodoDTO>> Handle(GetTodoListQuery request, CancellationToken cancellationToken)
     {
-        return await _applicationDb.Todos.Select(TodoDTO.Projection)
+        return await _applicationDb.Todos.OrderBy(todo => todo.Id)
+                                         .Skip(request.Start)
+                                         .Take(request.Limit)
+                                         .Select(TodoDTO.Projection)
                                          .ToListAsync(cancellationToken);
     }
 }
