@@ -5,18 +5,18 @@ using Project.Core.DataLayer;
 
 namespace Project.BusinessLogic.Todos;
 
-internal sealed record GetTodoQuery : IRequest<IEnumerable<TodoDTO>> { }
+internal sealed record GetTodoListQuery : IRequest<IEnumerable<TodoDTO>> { }
 
-internal class GetTodoQueryHandler : IRequestHandler<GetTodoQuery, IEnumerable<TodoDTO>>
+internal class GetTodoListQueryHandler : IRequestHandler<GetTodoListQuery, IEnumerable<TodoDTO>>
 {
     private readonly IApplicationDbContext _applicationDb;
 
-    public GetTodoQueryHandler(IApplicationDbContext applicationDb) 
+    public GetTodoListQueryHandler(IApplicationDbContext applicationDb) 
     {
         _applicationDb = applicationDb;
     }
 
-    public async Task<IEnumerable<TodoDTO>> Handle(GetTodoQuery request, CancellationToken cancellationToken)
+    public async Task<IEnumerable<TodoDTO>> Handle(GetTodoListQuery request, CancellationToken cancellationToken)
     {
         return await _applicationDb.Todos.Select(TodoDTO.Projection)
                                          .ToListAsync(cancellationToken);
