@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 
 namespace Project.BusinessLogic.Todos.Models;
 
-internal class TodoDTO : IProjection<Todo, TodoDTO>
+public class TodoDTO : IProjection<Todo, TodoDTO>
 {
     public int Id { get; set; }
 

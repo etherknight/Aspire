@@ -1,3 +1,5 @@
+using Projects;
+
 namespace Orchestration;
 
 internal class Program
@@ -16,23 +18,22 @@ internal class Program
         // Params come from Orchestation\appsettings.Development.json   
         var username = builder.AddParameter("username");
         var password = builder.AddParameter("password");
-
-
+        
         var database = builder.AddPostgres("ClientDB", username, password, port: 2050)
-                              .WithEnvironment("POSTGRES_DB", "ApplicationDB")
-                              .AddDatabase("ApplicationDB", "application");
-
-        //var filestore = builder.AddAzureStorage("Filestore")
-        //                       .RunAsEmulator()
-        //                       .AddBlobs("dev");
-
-        builder.AddProject<Projects.Project_Api>("ProjectApi")
-      //         .WithReference(filestore)
+                            // Persist DB data.
+                            .WithDataVolume("application_db")
+                            // Stops Aspire killing the DB container each time it stops debugging.
+                            .WithLifetime(ContainerLifetime.Persistent)
+                            .AddDatabase("ApplicationDB", "application");
+        
+        builder.AddProject<Project_Api>("ProjectApi")
+               .WaitFor(database)
                .WithReference(database);
 
-        //builder.AddProject<Projects.Project_Worker>("ProjectWorker")
-        //    .WithReference(database)
-        //    .WithReplicas(2);
+        builder.AddProject<Project_Worker>("ProjectWorker")
+            .WaitFor(database)
+            .WithReference(database)
+            .WithReplicas(2);
 
         return builder;
     }

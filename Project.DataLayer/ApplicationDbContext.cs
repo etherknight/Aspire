@@ -1,11 +1,12 @@
 ﻿using Project.Core.DataLayer.Entities;
+using Project.Shared.Interfaces;
 
 namespace Project.Core.DataLayer;
 
 
 public interface IApplicationDbContext
 {
-    Task<bool> Init(CancellationToken token);
+    Task<Option<bool>> Init(CancellationToken token);
 
     public DbSet<Todo> Todos { get; }
 }
@@ -19,22 +20,20 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext
     {
     }
 
-    public async Task<bool> Init(CancellationToken token)
+    public async Task<Option<bool>> Init(CancellationToken token)
     {
+        Option<bool> result = OptionError.NotComplete;
         try
         {
-            // bool created = await Database.EnsureCreatedAsync(token);
-            // if (created)
-            // {
-            await Database.MigrateAsync();
-            // }
+            await Database.MigrateAsync(cancellationToken: token);
+            result = true;
         }
         catch (Exception ex)
         {
-            return false;
+            result = OptionError.FromException(ex);
         }
 
-        return true;
+        return result;
     }
 
     //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

@@ -1,19 +1,32 @@
+using Npgsql;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using Project.BusinessLogic;
 
 namespace Project.Api;
 
-public class Program
+public static class Program
 {
-    private static CancellationTokenSource tokenSource = new();
+    private static CancellationTokenSource _tokenSource = new();
 
-    public async static Task Main(string[] args)
-    {
-        await CrateWebApplication(args)
-                  .ConfigureWebApp()
-                  .RunAsync(tokenSource.Token);
+    public static async Task Main(string[] args) {
+        try {
+            await CreateWebApplication(args)
+                .ConfigureWebApp()
+                .RunAsync(_tokenSource.Token);        
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally {
+            _tokenSource?.Dispose();
+        }
     }
 
-    private static WebApplication CrateWebApplication(string[] args)
+    private static WebApplication CreateWebApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +34,28 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(cfg => {
+                cfg.AddAspNetCoreInstrumentation();
+                cfg.AddNpgsql();
+            })
+            .WithMetrics(cfg => {
+                cfg.AddAspNetCoreInstrumentation();
+                cfg.AddNpgsqlInstrumentation();
+            });
+
+        builder.Logging.AddOpenTelemetry(cfg => {
+            cfg.IncludeFormattedMessage = true;
+            cfg.IncludeScopes = true;
+        });
+
+        builder.Services.Configure<OpenTelemetryLoggerOptions>(cfg => {
+            cfg.AddOtlpExporter();
+        });
+        
+        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter());
+        builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => cfg.AddOtlpExporter());
 
         builder.Services.RegisterBusinessLogic(builder.Configuration);
 
@@ -40,10 +75,7 @@ internal static class WebApplicationExtensions
         }
 
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-
         app.MapControllers();
 
         return app;
