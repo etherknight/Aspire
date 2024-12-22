@@ -44,7 +44,8 @@ public static class Program
                 cfg.AddAspNetCoreInstrumentation();
                 cfg.AddNpgsqlInstrumentation();
             });
-
+        
+        // REF: https://www.youtube.com/watch?v=oHE1MztOP3I&t=492s
         builder.Logging.AddOpenTelemetry(cfg => {
             cfg.IncludeFormattedMessage = true;
             cfg.IncludeScopes = true;
