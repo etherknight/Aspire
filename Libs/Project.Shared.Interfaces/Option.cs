@@ -126,6 +126,29 @@ public class Option<TObject> {
     //     }
     // }
     #endregion
+
+    #region Guard
+    
+    public Option<TObject> Guard(Func<bool> guardFunc)
+    {
+        bool valid = guardFunc();
+        if (valid is false) {
+            // TODO: Accumulate errors here.
+        }
+
+        return this;
+    }
+    
+    public async Task<Option<TObject>> Guard(Func<Task<bool>> guardFunc)
+    {
+        bool valid = await guardFunc();
+        if (valid is false) {
+            // TODO: Accumulate errors here.
+        }
+
+        return this;
+    }
+    #endregion
 }
 
 public static class OptionAsyncExtensions
@@ -184,6 +207,21 @@ public static class OptionAsyncExtensions
         Option<TData> result = await option;
         result.Finally(some, none);
         return result;
+    }
+    #endregion
+    
+    #region Then
+    public static async Task<Option<TOut>> Then<TOut, TObject>(
+        this Task<Option<TObject>> result, 
+        Func<TObject, Option<TOut>> func
+    )
+    {
+        Option<TObject> awaited = await result;
+
+        return awaited.Finally(
+                data => func(data),
+                error => error
+            );
     }
     #endregion
 }
