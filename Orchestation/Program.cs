@@ -1,3 +1,5 @@
+using Google.Protobuf.WellKnownTypes;
+
 using Projects;
 
 namespace Orchestration;
@@ -22,7 +24,7 @@ internal class Program
         IResourceBuilder<PostgresDatabaseResource> database = SetupDatabase(builder, username, password);
         IResourceBuilder<RabbitMQServerResource> messageBus = SetupMessageBus(builder, username, password);
         
-        builder.AddProject<Project_Api>("ProjectApi")
+       var api = builder.AddProject<Project_Api>("ProjectApi")
                .WaitFor(database)
                .WaitFor(messageBus)
                .WithReference(database)
@@ -34,6 +36,13 @@ internal class Program
             .WithReference(database)
             .WithReference(messageBus)
             .WithReplicas(2);
+
+        builder.AddYarnApp("Dashboard", "../client/project-site", "dev")
+               .WithReference(api)
+               .WithEnvironment("BROWSER", "none")
+               .WithEnvironment("VITE_API_URL", api.GetEndpoint("http"))
+               .WithHttpEndpoint(port: 2080, targetPort: 5173, env: "VITE_PORT")             
+               .WithYarnPackageInstallation();
 
         return builder;
     }
