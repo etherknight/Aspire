@@ -14,18 +14,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit" Version="8.3.4" />
-    <PackageReference Include="MassTransit.Analyzers" Version="8.3.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="MassTransit.RabbitMQ" Version="8.3.4" />
     <PackageReference Include="MediatR" Version="12.4.1" />
     <PackageReference Include="Npgsql.OpenTelemetry" Version="9.0.2" />
     <PackageReference Include="OpenTelemetry" Version="1.10.0" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.10.0" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.10.0" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.10.1" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.8.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
   </ItemGroup>
 
@@ -34,7 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Libs\Project.Core.Services\Project.Core.Services.csproj" />
     <ProjectReference Include="..\Project.BusinessLogic\Project.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

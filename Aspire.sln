@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Project.Core.Services", "Li
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.Shared.Interfaces", "Libs\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj", "{7958FAC6-5871-47DA-9FB4-D6EC0160E847}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Project.Core.Services.Interfaces", "Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj", "{615F205F-C977-4E34-92B9-B64CEFFD5835}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{7958FAC6-5871-47DA-9FB4-D6EC0160E847}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7958FAC6-5871-47DA-9FB4-D6EC0160E847}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7958FAC6-5871-47DA-9FB4-D6EC0160E847}.Release|Any CPU.Build.0 = Release|Any CPU
+		{615F205F-C977-4E34-92B9-B64CEFFD5835}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{615F205F-C977-4E34-92B9-B64CEFFD5835}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{615F205F-C977-4E34-92B9-B64CEFFD5835}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{615F205F-C977-4E34-92B9-B64CEFFD5835}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +68,7 @@ Global
 		{C5B61341-79EF-4245-84E5-9EA793F882C2} = {5EC194FA-980D-45E9-8691-CEE34AE174CC}
 		{01BB05B7-A9CB-4470-A959-D5718B835CED} = {5EC194FA-980D-45E9-8691-CEE34AE174CC}
 		{7958FAC6-5871-47DA-9FB4-D6EC0160E847} = {5EC194FA-980D-45E9-8691-CEE34AE174CC}
+		{615F205F-C977-4E34-92B9-B64CEFFD5835} = {5EC194FA-980D-45E9-8691-CEE34AE174CC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {736A792E-37A8-4208-AE94-23395473A979}

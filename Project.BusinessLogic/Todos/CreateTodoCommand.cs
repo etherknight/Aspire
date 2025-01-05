@@ -1,18 +1,22 @@
-﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Project.BusinessLogic.Todos.Models;
+﻿using Project.BusinessLogic.Todos.Models;
 using Project.Core.DataLayer;
 using Project.Core.DataLayer.Entities;
+using Project.Core.Services.Interfaces.Messaging;
+using Project.Core.Services.Interfaces.Messaging.Messages;
 
 namespace Project.BusinessLogic.Todos;
 
 public sealed record CreateTodoCommand(TodoDTO Todo) : IRequest<Option<TodoDTO>> { }
 
 internal class CreateTodoCommandHandler(
-        IApplicationDbContext dbContext
+        IApplicationDbContext dbContext,
+        IMessagingService messagingService,
+        ILogger<CreateTodoCommandHandler> logger
     ) : IRequestHandler<CreateTodoCommand, Option<TodoDTO>> {
     
     private readonly IApplicationDbContext _dbContext = dbContext;
+    private readonly IMessagingService _messagingService = messagingService;
+    private readonly ILogger<CreateTodoCommandHandler> _logger = logger;
 
     private CancellationToken _cancellation = CancellationToken.None;
 
@@ -23,7 +27,8 @@ internal class CreateTodoCommandHandler(
         return await ValidateRequest(request)
                         .Then(validDto => CreateTodo(validDto))
                         .Then(todo => SaveTodo(todo))
-                        .Then(todo => UpdateTodoId(todo, request.Todo));
+                        .Then(todo => UpdateTodoId(todo, request.Todo))
+                        .Then(todo => FireEvents(todo));
     }
 
     private Option<TodoDTO> ValidateRequest(CreateTodoCommand request) {
@@ -62,5 +67,11 @@ internal class CreateTodoCommandHandler(
     private Option<TodoDTO> UpdateTodoId(Todo addedTodo, TodoDTO originalDto) {
         originalDto.Id = addedTodo.Id;
         return originalDto;
+    }
+
+    private Option<TodoDTO> FireEvents(TodoDTO todoDto) {
+        _logger.LogDebug("Firing created todo event");
+        _messagingService.Send( new TodoCreatedM(todoDto.Id));
+        return todoDto;
     }
 }
