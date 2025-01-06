@@ -40,6 +40,15 @@ public static class Program
         builder.Services.RegisterBusinessLogic(builder.Configuration);
         
         RegisterOpenTelemetry(builder);
+        builder.Services.AddCors(cfg =>
+        {
+            cfg.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyHeader()
+                      .AllowAnyOrigin()
+                      .AllowAnyMethod();
+            });
+        });
 
 
         return builder.Build();
@@ -83,6 +92,7 @@ internal static class WebApplicationExtensions
         app.UseHttpsRedirection();
         app.UseAuthorization();
         app.MapControllers();
+        app.UseCors();
 
         return app;
     }
