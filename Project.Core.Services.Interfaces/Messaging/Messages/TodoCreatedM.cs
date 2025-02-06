@@ -1,3 +1,4 @@
 ﻿namespace Project.Core.Services.Interfaces.Messaging.Messages;
 
-public sealed record TodoCreatedM(int TodoId);
+[IpcMessage(MessagingDestinationE.Worker)]
+public sealed record TodoCreatedM(int TodoId) : IIpcMessage;

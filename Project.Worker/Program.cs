@@ -3,6 +3,7 @@ using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using Project.Core.DataLayer;
 using Project.Core.Services;
 using Rebus.OpenTelemetry.Configuration;
 
@@ -20,6 +21,7 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        builder.Services.RegisterDataLayer(builder.Configuration);
         builder.Services.RegisterCoreServices(builder.Configuration, "worker");
        
         builder.Services.AddOpenTelemetry()
