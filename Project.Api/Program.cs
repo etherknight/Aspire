@@ -11,8 +11,13 @@ namespace Project.Api;
 public static class Program
 {
     private static readonly CancellationTokenSource _tokenSource = new();
-
+    
     public static async Task Main(string[] args) {
+        AppDomain.CurrentDomain.ProcessExit += (sender, e) => {
+            _tokenSource?.Cancel();
+            Console.WriteLine("Process is exiting...");
+        };
+            
         try {
             await CreateWebApplication(args)
                 .ConfigureWebApp()

@@ -11,11 +11,35 @@ namespace Project.Worker;
 
 public class Program
 {
-    public static void Main(string[] args)
+    private static readonly CancellationTokenSource _tokenSource = new();
+    public static async Task Main(string[] args)
+    {
+        AppDomain.CurrentDomain.ProcessExit += (sender, e) => {
+            _tokenSource?.Cancel();
+            Console.WriteLine("Process is exiting...");
+        };
+        
+        var builder = WebApplication.CreateBuilder(args);
+        try {
+            await CreateWebApplication(args)
+                .ConfigureWebApp()
+                .RunAsync(_tokenSource.Token);        
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+        finally {
+            _tokenSource?.Dispose();
+        }
+
+        
+    }
+    
+    private static WebApplication CreateWebApplication(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
 
         builder.Services.AddControllers();
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,51 +47,61 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.RegisterDataLayer(builder.Configuration);
         builder.Services.RegisterCoreServices(builder.Configuration, "worker");
-       
-        builder.Services.AddOpenTelemetry()
-            .ConfigureResource(cfg => {
-                cfg.AddService("client.worker");
-            })
-           .WithTracing(cfg => {
-               cfg.AddAspNetCoreInstrumentation();
-               cfg.AddNpgsql();
-               cfg.AddRebusInstrumentation();
-           })
-           .WithMetrics(cfg => {
-               cfg.AddAspNetCoreInstrumentation();
-               cfg.AddNpgsqlInstrumentation();
-               cfg.AddRebusInstrumentation();
-           });
+        //builder.Services.RegisterBusinessLogic(builder.Configuration);
         
-       // REF: https://www.youtube.com/watch?v=oHE1MztOP3I&t=492s
-       builder.Logging.AddOpenTelemetry(cfg => {
-           cfg.IncludeFormattedMessage = true;
-           cfg.IncludeScopes = true;
-       });
-        
-       builder.Services.Configure<OpenTelemetryLoggerOptions>(cfg => {
-           cfg.AddOtlpExporter();
-       });
-        
-       builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter());
-       builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => cfg.AddOtlpExporter());
-
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        RegisterOpenTelemetry(builder);
+        builder.Services.AddCors(cfg =>
         {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+            cfg.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyHeader()
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod();
+            });
+        });
+        
+        return builder.Build();
+    }
+    
+    private static void RegisterOpenTelemetry(WebApplicationBuilder builder) {
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(cfg => {
+                cfg.AddAspNetCoreInstrumentation();
+                cfg.AddNpgsql();
+                cfg.AddRebusInstrumentation();
+            })
+            .WithMetrics(cfg => {
+                cfg.AddAspNetCoreInstrumentation();
+                cfg.AddNpgsqlInstrumentation();
+                cfg.AddRebusInstrumentation();
+            });
+        
+        // REF: https://www.youtube.com/watch?v=oHE1MztOP3I&t=492s
+        builder.Logging.AddOpenTelemetry(cfg => {
+            cfg.IncludeFormattedMessage = true;
+            cfg.IncludeScopes = true;
+        });
+        
+        builder.Services.Configure<OpenTelemetryLoggerOptions>(cfg => {
+            cfg.AddOtlpExporter("client.worker", options => { });
+        });
+        
+        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter("client.worker", options => { }));
+        builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => cfg.AddOtlpExporter("client.worker", options => { }));
+    }
+}
 
+internal static class WebApplicationExtensions
+{
+    internal static WebApplication ConfigureWebApp(this WebApplication app)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
         app.UseHttpsRedirection();
-
         app.UseAuthorization();
-
-
         app.MapControllers();
+        app.UseCors();
 
-        app.Run();
+        return app;
     }
 }
