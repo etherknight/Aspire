@@ -4,6 +4,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
+        "ASPIRE_CONTAINER_RUNTIME": "podman",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21173",
@@ -17,6 +18,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
+        "ASPIRE_CONTAINER_RUNTIME": "podman",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "DOTNET_ENVIRONMENT": "Development",
         "DOTNET_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:19250",
