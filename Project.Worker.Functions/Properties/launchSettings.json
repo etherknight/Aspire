@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "Project.Worker.Functions": {
-      "commandName": "Project",
-      "commandLineArgs": "--port 7231",
-      "launchBrowser": false
-    }
-  }
-}
