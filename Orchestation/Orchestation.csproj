@@ -27,7 +27,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Project.Api\Project.Api.csproj" />
-    <ProjectReference Include="..\Project.Worker.Functions\Project.Worker.Functions.csproj" />
     <ProjectReference Include="..\Project.Worker\Project.Worker.csproj" />
   </ItemGroup>
 

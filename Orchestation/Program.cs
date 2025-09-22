@@ -22,10 +22,7 @@ internal class Program
         
         IResourceBuilder<PostgresDatabaseResource> database = SetupDatabase(builder, username, password);
         IResourceBuilder<RabbitMQServerResource> messageBus = SetupMessageBus(builder, username, password);
-        
-        IResourceBuilder<AzureFunctionsProjectResource> functions = builder.AddAzureFunctionsProject<Project_Worker_Functions>("ProjectFunctions")
-                                                                           .WithExternalHttpEndpoints();
-
+    
         var api = builder.AddProject<Project_Api>("ProjectApi")
                .WaitFor(database)
                .WaitFor(messageBus)
@@ -35,7 +32,6 @@ internal class Program
         builder.AddProject<Project_Worker>("ProjectWorker")
             .WaitFor(database)
             .WaitFor(messageBus)
-            .WithReference(functions)
             .WithReference(database)
             .WithReference(messageBus)
             .WithReplicas(2);
