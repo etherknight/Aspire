@@ -1,16 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.Reflection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Project.Core.Services.Interfaces.Messaging;
-using Project.Core.Services.Interfaces.Messaging.Messages;
 using Project.Core.Services.Messaging.Messages;
-using Rebus.RabbitMq;
 using Rebus.Config;
-using Rebus.Routing.TypeBased;
-using Rebus.Transport;
-using Rebus.Transport.InMem;
-using RabbitMQ.Client;
 using Rebus.Routing;
-using System.Reflection;
+using Rebus.Routing.TypeBased;
 
 namespace Project.Core.Services.Messaging;
 
@@ -35,8 +30,10 @@ internal static class Module
                     opts.EnableDiagnosticSources()
                         .LogPipeline(true);
                 })
-                .Transport(transport => transport.UseRabbitMq(connectionString, $"{QueueName}.{role}"))
-                .Routing(router => SetupMessageRouting(router))
+                .Transport(transport => { 
+                    transport.UseRabbitMq(connectionString, $"{QueueName}.{role}");
+                })
+                .Routing(SetupMessageRouting)
             );
 
         services
@@ -53,19 +50,16 @@ internal static class Module
                                              .Where(type => type.IsAssignableTo(typeof(IIpcMessage)) && type.IsClass );
 
         foreach (Type messageType in messages) {
-            string destination = GetDestination(messageType);            
-            typeBasedRouter.Map(messageType, destination);            
+             GetDestination(messageType, typeBasedRouter);  
         }
-
     }
 
-    private static string GetDestination(Type messageType) { 
-        var attribute = messageType.GetCustomAttribute<IpcMessageAttribute>();
-
-        if (attribute is null) {
-            throw new Exception($"IpcMessage '{messageType.FullName}' has not implemented IpcMessage attribute");
+    private static void GetDestination(Type messageType, TypeBasedRouterConfigurationExtensions.TypeBasedRouterConfigurationBuilder router) { 
+        var attributes = messageType.GetCustomAttributes<IpcMessageAttribute>();
+        foreach (var attribute in attributes) {
+            string destination = _addresses[attribute.Destination];
+            router.Map(messageType, destination);
         }
-
-        return _addresses[attribute.Destination];
     }
 }
+
