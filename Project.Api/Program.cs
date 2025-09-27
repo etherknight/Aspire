@@ -4,6 +4,7 @@ using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
 using Project.BusinessLogic;
 using Project.Core.Services;
+using Project.Shared.Proto;
 using Rebus.OpenTelemetry.Configuration;
 
 namespace Project.Api;
@@ -43,6 +44,7 @@ public static class Program
         builder.Services.AddSwaggerGen();
         builder.Services.RegisterCoreServices(builder.Configuration, "api");
         builder.Services.RegisterBusinessLogic(builder.Configuration);
+        builder.Services.RegisterGrpc();
         
         RegisterOpenTelemetry(builder);
         builder.Services.AddCors(cfg =>
@@ -79,11 +81,14 @@ public static class Program
         });
         
         builder.Services.Configure<OpenTelemetryLoggerOptions>(cfg => {
-            cfg.AddOtlpExporter("client.api", options => { });
+            cfg.AddOtlpExporter("Project.Api", options => { });
         });
         
-        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter("client.api", options => { }));
-        builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => cfg.AddOtlpExporter("client.api", options => { }));
+        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter("Project.Api", options => { }));
+        builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => {
+            cfg.AddOtlpExporter("Project.Api", options => { });
+            cfg.AddSource("Project.Api");
+        });
     }
 }
 
@@ -96,6 +101,7 @@ internal static class WebApplicationExtensions
         app.UseSwaggerUI();
         app.UseHttpsRedirection();
         app.UseAuthorization();
+        app.MapGrpcServices();
         app.MapControllers();
         app.UseCors();
 
