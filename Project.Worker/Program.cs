@@ -9,13 +9,16 @@ using Rebus.OpenTelemetry.Configuration;
 
 namespace Project.Worker;
 
+/// <summary>
+/// Worker entry point.
+/// </summary>
 public class Program
 {
-    private static readonly CancellationTokenSource _tokenSource = new();
+    private static readonly CancellationTokenSource TokenSource = new();
     public static async Task Main(string[] args)
     {
         AppDomain.CurrentDomain.ProcessExit += (sender, e) => {
-            _tokenSource?.Cancel();
+            TokenSource?.Cancel();
             Console.WriteLine("Process is exiting...");
         };
         
@@ -23,7 +26,7 @@ public class Program
         try {
             await CreateWebApplication(args)
                 .ConfigureWebApp()
-                .RunAsync(_tokenSource.Token);        
+                .RunAsync(TokenSource.Token);        
         }
         catch (Exception e)
         {
@@ -31,7 +34,7 @@ public class Program
             throw;
         }
         finally {
-            _tokenSource?.Dispose();
+            TokenSource?.Dispose();
         }
 
         
