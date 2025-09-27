@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Project.Core.Services.Diagnostics;
+using Project.Core.Services.Interfaces.Diagnostics;
 using Project.Core.Services.Interfaces.Messaging;
 using Project.Core.Services.Messaging;
 
@@ -9,7 +11,7 @@ public static class Module
 {
     public static IServiceCollection RegisterCoreServices(this IServiceCollection services, IConfiguration configuration, string role) {
         services.AddTransient<IMessagingService, MessagingService>();
-        
+        services.AddSingleton<IProjectTracer, ProjectTracer>();
         services.RegisterMessaging(configuration, role);
         
         return services;
