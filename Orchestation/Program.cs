@@ -24,6 +24,8 @@ internal class Program
         IResourceBuilder<RabbitMQServerResource> messageBus = SetupMessageBus(builder, username, password);
     
         var api = builder.AddProject<Project_Api>("ProjectApi")
+               .WithEndpoint(2020)
+               
                .WaitFor(database)
                .WaitFor(messageBus)
                .WithReference(database)
