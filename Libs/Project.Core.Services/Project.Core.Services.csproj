@@ -18,8 +18,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
-    <ProjectReference Include="..\..\Project.DataLayer\Project.Core.DataLayer.csproj" />
+    <ProjectReference Include="..\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\Project.DataLayer\Project.Core.DataLayer.csproj" />
     <ProjectReference Include="..\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
   </ItemGroup>
 

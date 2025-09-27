@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Libs\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
+    <ProjectReference Include="..\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
   </ItemGroup>
 
 </Project>

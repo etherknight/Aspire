@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Grpc.AspNetCore" Version="2.71.0" />
+      <PackageReference Include="Grpc.AspNetCore.Server" Version="2.71.0" />
+      <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.71.0" />
+      <PackageReference Include="Grpc.AspNetCore.Web" Version="2.71.0" />
+      <PackageReference Include="MediatR" Version="13.0.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Protobuf Include="Protos\Dashboard.proto" GrpcServices="Server">
+            <Generator>MSBuild:Compile</Generator>
+        </Protobuf>
+    </ItemGroup>
+    <Target Name="GenerateGrpcWebClient" AfterTargets="Build">
+        <Exec Command="yarn --cwd ..\..\client\project-site gen:proto" />
+    </Target>
+    <ItemGroup>
+      <ProjectReference Include="..\Project.BusinessLogic\Project.BusinessLogic.csproj" />
+    </ItemGroup>
+</Project>

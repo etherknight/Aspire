@@ -2,9 +2,10 @@
   <Folder Name="/Libs/">
     <Project Path="Libs/Project.Core.Services/Project.Core.Services.csproj" />
     <Project Path="Libs/Project.Shared.Interfaces/Project.Shared.Interfaces.csproj" />
-    <Project Path="Project.BusinessLogic/Project.BusinessLogic.csproj" />
-    <Project Path="Project.Core.Services.Interfaces/Project.Core.Services.Interfaces.csproj" />
-    <Project Path="Project.DataLayer/Project.Core.DataLayer.csproj" />
+    <Project Path="Libs/Project.BusinessLogic/Project.BusinessLogic.csproj" />
+    <Project Path="Libs/Project.Core.Services.Interfaces/Project.Core.Services.Interfaces.csproj" />
+    <Project Path="Libs/Project.DataLayer/Project.Core.DataLayer.csproj" />
+    <Project Path="Libs/Project.Shared.Proto/Project.Shared.Proto.csproj" />
   </Folder>
   <Project Path="Orchestation/Orchestation.csproj" />
   <Project Path="Project.Api/Project.Api.csproj" />

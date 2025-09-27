@@ -1,0 +1,39 @@
+﻿syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+option csharp_namespace = "Project.Shared.GRPC";
+package dashboard;
+
+// The greeting service definition.
+service TodoService {
+  rpc CreateTodo (CreateTodoRequest) returns (CreateTodoResponse);
+  rpc UpdateTodo (UpdateTodoRequest) returns (UpdateTodoResponse);
+}
+
+// The request message containing the user's name.
+message CreateTodoRequest {
+  string title = 1;
+  optional google.protobuf.Timestamp dueBy = 2;
+}
+
+// The response message containing the greetings.
+message CreateTodoResponse {
+  int32  id = 1;
+  string title = 2;
+  optional google.protobuf.Timestamp dueBy = 3;
+  bool isComplete = 4;
+}
+
+message UpdateTodoRequest {
+  int32  id = 1;
+  string title = 2;
+  optional google.protobuf.Timestamp dueBy = 3;
+  bool isComplete = 4;
+}
+
+message UpdateTodoResponse {
+  int32  id = 1;
+  string title = 2;
+  optional google.protobuf.Timestamp dueBy = 3;
+  bool isComplete = 4;
+}

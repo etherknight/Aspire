@@ -29,9 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Libs\Project.Core.Services\Project.Core.Services.csproj" />
-    <ProjectReference Include="..\Project.BusinessLogic\Project.BusinessLogic.csproj" />
-    <ProjectReference Include="..\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Libs\Project.Core.Services\Project.Core.Services.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Libs\Project.BusinessLogic\Project.BusinessLogic.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Libs\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
