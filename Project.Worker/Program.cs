@@ -65,8 +65,10 @@ public class Program
         
         return builder.Build();
     }
-    
+
     private static void RegisterOpenTelemetry(WebApplicationBuilder builder) {
+        string activitySourceName = Project.Core.Services.Diagnostics.ProjectTracer.GetActivitySourceName();
+
         builder.Services.AddOpenTelemetry()
             .WithTracing(cfg => {
                 cfg.AddAspNetCoreInstrumentation();
@@ -78,20 +80,24 @@ public class Program
                 cfg.AddNpgsqlInstrumentation();
                 cfg.AddRebusInstrumentation();
             });
-        
+
         // REF: https://www.youtube.com/watch?v=oHE1MztOP3I&t=492s
         builder.Logging.AddOpenTelemetry(cfg => {
             cfg.IncludeFormattedMessage = true;
             cfg.IncludeScopes = true;
         });
-        
+
         builder.Services.Configure<OpenTelemetryLoggerOptions>(cfg => {
-            cfg.AddOtlpExporter("client.worker", options => { });
+            cfg.AddOtlpExporter(activitySourceName, options => { });
         });
-        
-        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter("client.worker", options => { }));
-        builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => cfg.AddOtlpExporter("client.worker", options => { }));
-    }
+
+        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg =>
+            cfg.AddOtlpExporter(activitySourceName, options => { }));
+        builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => {
+            cfg.AddOtlpExporter(activitySourceName, options => { });
+            cfg.AddSource(activitySourceName);
+        });
+}
 }
 
 internal static class WebApplicationExtensions

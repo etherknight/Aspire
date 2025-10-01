@@ -9,7 +9,7 @@ public interface IProjectTracer {
     /// </summary>
     /// <param name="activityName"></param>
     /// <returns></returns>
-    Activity StartActivity(string activityName);
+    Activity? StartActivity(string activityName);
     
     /// <summary>
     /// 
@@ -17,5 +17,5 @@ public interface IProjectTracer {
     /// <param name="activityName"></param>
     /// <typeparam name="TModule"></typeparam>
     /// <returns></returns>
-    Activity StartActivity<TModule>(string activityName);
+    Activity? StartActivity<TModule>(string activityName);
 }

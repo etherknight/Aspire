@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Project.Core.DataLayer;
+using Project.BusinessLogic.Behaviours;
 
 namespace Project.BusinessLogic;
 
@@ -13,6 +14,7 @@ public static class Module
         services.AddMediatR(cfg => {
             cfg.RegisterServicesFromAssembly(typeof(Module).Assembly);
         });
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(DiagnosticBehaviour<,>));
         return services;
     }
 }

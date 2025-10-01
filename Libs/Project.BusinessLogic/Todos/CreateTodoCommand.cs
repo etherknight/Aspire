@@ -39,7 +39,9 @@ internal class CreateTodoCommandHandler(
         Option<TodoDTO> valid = request.Todo;
 
         valid.Guard(() => request.Todo is not null)
-             .Guard(() => false == string.IsNullOrWhiteSpace(request.Todo?.Title));
+             .Guard(() => false == string.IsNullOrWhiteSpace(request.Todo?.Title))
+             .EndActivity(activity);
+        
         return valid;
     }
 
@@ -74,7 +76,8 @@ internal class CreateTodoCommandHandler(
         catch (DbUpdateException ex) {
             result = OptionError.FromException(ex);
         }
-
+        
+        result.EndActivity(activity);
         return result;
     }
 

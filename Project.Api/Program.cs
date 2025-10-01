@@ -62,6 +62,8 @@ public static class Program
     }
 
     private static void RegisterOpenTelemetry(WebApplicationBuilder builder) {
+        string activitySourceName = Project.Core.Services.Diagnostics.ProjectTracer.GetActivitySourceName();
+        
         builder.Services.AddOpenTelemetry()
             .WithTracing(cfg => {
                 cfg.AddAspNetCoreInstrumentation();
@@ -81,13 +83,13 @@ public static class Program
         });
         
         builder.Services.Configure<OpenTelemetryLoggerOptions>(cfg => {
-            cfg.AddOtlpExporter("Project.Api", options => { });
+            cfg.AddOtlpExporter(activitySourceName, options => { });
         });
         
-        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter("Project.Api", options => { }));
+        builder.Services.ConfigureOpenTelemetryMeterProvider(cfg => cfg.AddOtlpExporter(activitySourceName, options => { }));
         builder.Services.ConfigureOpenTelemetryTracerProvider(cfg => {
-            cfg.AddOtlpExporter("Project.Api", options => { });
-            cfg.AddSource("Project.Api");
+            cfg.AddOtlpExporter(activitySourceName, options => { });
+            cfg.AddSource(activitySourceName);
         });
     }
 }

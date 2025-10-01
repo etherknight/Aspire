@@ -41,6 +41,11 @@ public enum OptionErrorCodeE
     /// A passed parameter was invalid, check message for details
     /// </summary>
     INVALID_PARAMETER,
+    
+    /// <summary>
+    /// A condition was not met to allow the code to condition.
+    /// </summary>
+    INVALID_CONDITION
 }
 
 /// <summary>
@@ -54,7 +59,8 @@ public sealed class OptionError(OptionErrorCodeE code, string message)
     public static OptionError NotImplemented => new(OptionErrorCodeE.NOT_IMPLEMENTED, "Not implemented");
     
     public static OptionError NotComplete => new(OptionErrorCodeE.NOT_RUN, "Unset error, method incomplete");
-    
+
+    public static OptionError GuardError(string condition, string? message) => new(condition, message);
     public static OptionError FromException(Exception ex, OptionErrorCodeE code = OptionErrorCodeE.EXCEPTION) => new(code, ex.Message);
     
     /// <summary>
@@ -91,6 +97,11 @@ public sealed class OptionError(OptionErrorCodeE code, string message)
         Exception = exception;
     }
     
+    public OptionError(string condition, string? message)
+        : this (OptionErrorCodeE.INVALID_CONDITION, $"{condition}: ${message}")
+    {}
+    
+    #region INTERFACE: IEquatable
     public override bool Equals(object? value)
     {
         return value is OptionError error &&
@@ -101,4 +112,5 @@ public sealed class OptionError(OptionErrorCodeE code, string message)
 
     public override int GetHashCode()
         => HashCode.Combine(Code, Message);
+    #endregion
 }
