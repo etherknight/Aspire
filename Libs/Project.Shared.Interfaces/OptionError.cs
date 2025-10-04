@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace Project.Shared.Interfaces;
 
@@ -52,16 +53,16 @@ public enum OptionErrorCodeE
 /// Class for sending error information with responses.
 /// </summary>
 [method: DebuggerStepThrough]
-public sealed class OptionError(OptionErrorCodeE code, string message)
+public sealed class OptionError(OptionErrorCodeE code, string message, string? file, string? member, int? line)
 {
-    public static OptionError Default => new(OptionErrorCodeE.NONE, string.Empty);
-    
-    public static OptionError NotImplemented => new(OptionErrorCodeE.NOT_IMPLEMENTED, "Not implemented");
-    
-    public static OptionError NotComplete => new(OptionErrorCodeE.NOT_RUN, "Unset error, method incomplete");
-
+    private readonly string? _file = file;
+    private readonly string? _member = member;
+    private readonly int? _line = line;
+    public static OptionError Default => new(OptionErrorCodeE.NONE, string.Empty, null, null, null);
+    public static OptionError NotImplemented => new(OptionErrorCodeE.NOT_IMPLEMENTED, "Not implemented", null, null, null);
+    public static OptionError NotComplete => new(OptionErrorCodeE.NOT_RUN, "Unset error, method incomplete", null, null, null);
     public static OptionError GuardError(string condition, string? message) => new(condition, message);
-    public static OptionError FromException(Exception ex, OptionErrorCodeE code = OptionErrorCodeE.EXCEPTION) => new(code, ex.Message);
+    public static OptionError FromException(Exception ex, OptionErrorCodeE code = OptionErrorCodeE.EXCEPTION) => new(code, ex.Message, null, null, null);
     
     /// <summary>
     /// The error code.
@@ -69,7 +70,7 @@ public sealed class OptionError(OptionErrorCodeE code, string message)
     public OptionErrorCodeE Code { get; init;  } = code;
 
     /// <summary>
-    /// A non-localised error message, localised messages should use the error <see cref="CodeE"/>
+    /// A non-localised error message, localised messages should use the error <see cref="OptionErrorCodeE"/>
     /// </summary>
     public string Message { get; init; } = message;
 
@@ -84,21 +85,21 @@ public sealed class OptionError(OptionErrorCodeE code, string message)
     public Exception? Exception { get; init; }
 
     [DebuggerStepThrough]
-    public OptionError(IEnumerable<OptionError> errors) 
-        : this (OptionErrorCodeE.MANY, string.Empty)
-    {
+    public OptionError(IEnumerable<OptionError> errors, [CallerFilePath] string? file = null, [CallerMemberName] string? member = null, [CallerLineNumber] int? line = null) 
+        : this (OptionErrorCodeE.MANY, string.Empty, file, member, line) {
         Errors = errors.ToList().AsReadOnly();
     }
     
     [DebuggerStepThrough]
-    public OptionError(OptionErrorCodeE code, string message, Exception exception) 
-        : this (code, string.Empty)
+    public OptionError(OptionErrorCodeE code, string message, Exception exception, [CallerFilePath] string? file = null,[CallerMemberName] string? member = null, [CallerLineNumber] int? line = null) 
+        : this (code, string.Empty, file, member, line)
     {
         Exception = exception;
     }
     
-    public OptionError(string condition, string? message)
-        : this (OptionErrorCodeE.INVALID_CONDITION, $"{condition}: ${message}")
+    [DebuggerStepThrough]
+    public OptionError(string condition, string? message, [CallerFilePath] string? file = null,[CallerMemberName] string? member = null, [CallerLineNumber] int? line = null)
+        : this (OptionErrorCodeE.INVALID_CONDITION, $"{condition}: ${message}", file, member, line)
     {}
     
     #region INTERFACE: IEquatable
