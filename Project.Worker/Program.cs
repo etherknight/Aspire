@@ -15,10 +15,15 @@ namespace Project.Worker;
 public class Program
 {
     private static readonly CancellationTokenSource TokenSource = new();
+    
+    /// <summary>
+    /// Entry point
+    /// </summary>
+    /// <param name="args"></param>
     public static async Task Main(string[] args)
     {
         AppDomain.CurrentDomain.ProcessExit += (sender, e) => {
-            TokenSource?.Cancel();
+            TokenSource.Cancel();
             Console.WriteLine("Process is exiting...");
         };
         
@@ -36,8 +41,6 @@ public class Program
         finally {
             TokenSource?.Dispose();
         }
-
-        
     }
     
     private static WebApplication CreateWebApplication(string[] args)
