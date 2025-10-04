@@ -40,7 +40,7 @@ internal class CreateTodoCommandHandler(
 
         valid.Guard(() => request.Todo is not null)
              .Guard(() => false == string.IsNullOrWhiteSpace(request.Todo?.Title))
-             .EndActivity(activity);
+             .EndTrace(activity);
         
         return valid;
     }
@@ -77,13 +77,14 @@ internal class CreateTodoCommandHandler(
             result = OptionError.FromException(ex);
         }
         
-        result.EndActivity(activity);
+        result.EndTrace(activity);
         return result;
     }
 
     private Option<TodoDTO> UpdateTodoId(Todo addedTodo, TodoDTO originalDto) {
         using var activity = _tracer.StartActivity<CreateTodoCommandHandler>(nameof(UpdateTodoId));
         originalDto.Id = addedTodo.Id;
+        activity.EndTraceOk();
         return originalDto;
     }
 
@@ -91,6 +92,7 @@ internal class CreateTodoCommandHandler(
         using var activity = _tracer.StartActivity<CreateTodoCommandHandler>(nameof(FireEvents));
         _logger.LogDebug("Firing created todo event");
         _messagingService.Send( new TodoCreatedM(todoDto.Id));
+        activity.EndTraceOk();
         return todoDto;
     }
 }

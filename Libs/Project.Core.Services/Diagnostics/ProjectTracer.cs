@@ -1,7 +1,4 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using Project.Core.Services.Interfaces.Diagnostics;
-using Project.Shared.Interfaces;
+﻿using System.Reflection;
 
 namespace Project.Core.Services.Diagnostics;
 
@@ -20,13 +17,5 @@ public class ProjectTracer : IProjectTracer {
     public Activity? StartActivity<TModule>(string activityName) {
         string moduleName = typeof(TModule).Name;
         return Source.StartActivity($"{moduleName}::{activityName}", ActivityKind.Internal);
-    }
-}
-
-public static class ProjectTracerExtensions {
-    public static void SetStatus<TData>(this Activity? activity, Option<TData> result)
-     where TData: class {
-        ActivityStatusCode status = result.Finally(some => ActivityStatusCode.Ok, error => ActivityStatusCode.Error);
-        activity?.SetStatus(status);
     }
 }

@@ -225,3 +225,39 @@ public static class OptionAsyncExtensions
     }
     #endregion
 }
+
+public static class OptionTraceExtensions {
+    public static Option<TObject> EndTrace<TObject>(this Option<TObject> option, Activity? activity ){
+        if (activity is null) {
+            return option;
+        }
+        ActivityStatusCode code = option.Finally(
+            _ => ActivityStatusCode.Ok, 
+            _ => ActivityStatusCode.Error
+        );
+        activity.SetStatus(code);
+        return option;
+    }
+    
+    public static void EndTraceOk(this Activity? activity){ 
+        activity?.EndTrace(ActivityStatusCode.Ok);
+    }
+    public static void EndTraceError(this Activity? activity){ 
+        activity?.EndTrace(ActivityStatusCode.Error);
+    }
+    
+    public static void EndTrace(this Activity? activity, ActivityStatusCode code){ 
+        activity?.SetStatus(code);
+    }
+    
+    public static void EndTrace<TObject>(this Activity? activity, Option<TObject> option){
+        if (activity is null) {
+            return;
+        }
+        ActivityStatusCode code = option.Finally(
+            _ => ActivityStatusCode.Ok, 
+            _ => ActivityStatusCode.Error
+        );
+        activity.SetStatus(code);
+    }
+}
