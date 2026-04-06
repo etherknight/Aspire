@@ -1,12 +1,15 @@
 <Solution>
+  <Folder Name="/Functions/">
+    <Project Path="Functions\Project.Functions\Project.Functions.csproj" />
+  </Folder>
   <Folder Name="/Libs/">
-    <Project Path="Libs/Project.Core.Services/Project.Core.Services.csproj" />
-    <Project Path="Libs/Project.Shared.Interfaces/Project.Shared.Interfaces.csproj" />
     <Project Path="Libs/Project.BusinessLogic/Project.BusinessLogic.csproj" />
     <Project Path="Libs/Project.Core.Services.Interfaces/Project.Core.Services.Interfaces.csproj" />
+    <Project Path="Libs/Project.Core.Services/Project.Core.Services.csproj" />
     <Project Path="Libs/Project.DataLayer/Project.Core.DataLayer.csproj" />
-    <Project Path="Libs/Project.Shared.Proto/Project.Shared.Proto.csproj" />
+    <Project Path="Libs/Project.Shared.Interfaces/Project.Shared.Interfaces.csproj" />
   </Folder>
+  <Folder Name="/Tools/" />
   <Project Path="Orchestation/Orchestation.csproj" />
   <Project Path="Project.Api/Project.Api.csproj" />
   <Project Path="Project.Worker/Project.Worker.csproj" />

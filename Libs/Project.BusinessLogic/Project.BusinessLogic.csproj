@@ -1,21 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="MediatR" Version="13.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.7" />
+    <PackageReference Include="MediatR" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />  
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
-    <ProjectReference Include="..\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
-    <ProjectReference Include="..\Project.DataLayer\Project.Core.DataLayer.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Libs\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Libs\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
+    <ProjectReference Include="$(SolutionDir)\Libs\Project.DataLayer\Project.Core.DataLayer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
