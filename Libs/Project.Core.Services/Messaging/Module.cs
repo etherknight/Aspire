@@ -12,6 +12,7 @@ namespace Project.Core.Services.Messaging;
 internal static class Module
 {
     private static IDictionary<MessagingDestinationE, string> _addresses = new Dictionary<MessagingDestinationE, string> {
+            { MessagingDestinationE.Function, "client_ipc.func" },
             { MessagingDestinationE.Worker, "client_ipc.worker" },
             { MessagingDestinationE.Admin, "client_ipc.admin" },
             { MessagingDestinationE.Api, "client_ipc.api" }
