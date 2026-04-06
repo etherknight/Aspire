@@ -1,4 +1,5 @@
-﻿using Project.Core.Services.Interfaces.Diagnostics;
+﻿using System.Runtime.InteropServices.ComTypes;
+using Project.Core.Services.Interfaces.Diagnostics;
 
 namespace Project.BusinessLogic.Behaviours;
 
@@ -8,12 +9,14 @@ public class DiagnosticBehaviour<TRequest, TResponse>(
     : IPipelineBehavior<TRequest, TResponse> {
     
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken) {
-        using Activity? activity = tracer.StartActivity(typeof(TRequest).Name);
+        string commandName = request.GetType().Name;
+        using Activity? activity = tracer.StartActivity(commandName);
         using (logger.BeginScope(request)) {
-            activity?.AddBaggage("project.commandName", typeof(TRequest).Name);
-
+            logger.LogInformation("Command Started: {command.Name}", commandName);
+            activity?.AddBaggage("command.Name", commandName);
+            
             TResponse response = await next(cancellationToken);
-            activity?.Stop();
+            logger.LogInformation("Command Completed: {command.Name} in {command.Duration}", commandName, activity?.Duration ?? TimeSpan.Zero);
             return response;
         }
     }
