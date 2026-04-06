@@ -11,13 +11,10 @@ public static class Module
 
         string? connect = configuration.GetConnectionString("ApplicationDB");
 
-        services.AddDbContext<ApplicationDbContext>(opt =>
-        {
-            opt.UseNpgsql(connect, config =>
-            {
+        services.AddDbContext<ApplicationDbContext>(opt => {
+            opt.UseNpgsql(connect, config => {
                 config.UseNodaTime();
-            })
-            .UseLowerCaseNamingConvention();
+            });
         });
 
         return services;
