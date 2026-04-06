@@ -1,4 +1,6 @@
 using Aspire.Hosting.Azure;
+using Aspire.Hosting.Docker;
+using Microsoft.Extensions.DependencyInjection;
 using Projects;
 
 namespace Orchestration;
@@ -15,6 +17,8 @@ internal class Program
     private static IDistributedApplicationBuilder Orchestrate(string[] args)
     {
         IDistributedApplicationBuilder builder = DistributedApplication.CreateBuilder(args);
+
+        builder.AddDockerComposeEnvironment("project");
         
         // Params come from Orchestation\appsettings.Development.json 
         IResourceBuilder<ParameterResource> username = builder.AddParameter("username");
@@ -22,20 +26,28 @@ internal class Program
         
         IResourceBuilder<PostgresDatabaseResource> database = SetupDatabase(builder, username, password);
         IResourceBuilder<RabbitMQServerResource> messageBus = SetupMessageBus(builder, username, password);
+        
+        var functions = builder
+            .AddAzureFunctionsProject<Project_Functions>("ProjectFunctions")
+            .WaitFor(messageBus)
+            .WithReference(messageBus);
     
         var api = builder.AddProject<Project_Api>("ProjectApi")
                .WithEndpoint(2020)
-               
                .WaitFor(database)
                .WaitFor(messageBus)
                .WithReference(database)
-               .WithReference(messageBus);
+               .WithReference(messageBus)
+               .WithReference(functions)
+               .WithHttpHealthCheck("/health");
 
         builder.AddProject<Project_Worker>("ProjectWorker")
             .WaitFor(database)
             .WaitFor(messageBus)
             .WithReference(database)
             .WithReference(messageBus)
+            .WithReference(functions)
+            .WithHttpHealthCheck("/health")
             .WithReplicas(2);
 
         builder.AddYarnApp("Dashboard", "../client/project-site", "dev")
@@ -74,5 +86,34 @@ internal class Program
             .WithManagementPlugin();
         
         return messageBus;
+    }
+}
+
+public static class ProgramExt {
+    extension(IResourceBuilder<PostgresDatabaseResource> resourceBuilder)
+    {
+        public IResourceBuilder<PostgresDatabaseResource> WithResetDbCommand()
+        {
+            return resourceBuilder.WithCommand("reset", "Reset Database", async context =>
+            {
+#pragma warning disable ASPIREINTERACTION001 
+                IInteractionService interactionService = context.ServiceProvider.GetRequiredService<IInteractionService>();
+                if (interactionService is null) {
+                    return new ExecuteCommandResult { Success = false, ErrorMessage = "Reset unsupported" };
+                }
+
+                InteractionResult<bool> result = await interactionService.PromptConfirmationAsync("Are you sure you want to reset the database? This action cannot be undone.",
+                    "Confirm Reset");
+
+                if (!result.Data || result.Canceled)
+                {
+                    return new ExecuteCommandResult { Success = false, ErrorMessage = "Database reset cancelled by user." };
+                }
+
+                // Custom reset logic if needed
+                return new ExecuteCommandResult { Success = true };
+#pragma warning restore ASPIREINTERACTION001
+            });
+        }
     }
 }
