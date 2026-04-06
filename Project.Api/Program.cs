@@ -2,9 +2,9 @@ using Npgsql;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Trace;
+using Project.Api.Controllers;
 using Project.BusinessLogic;
 using Project.Core.Services;
-using Project.Shared.Proto;
 using Rebus.OpenTelemetry.Configuration;
 
 namespace Project.Api;
@@ -44,7 +44,6 @@ public static class Program
         builder.Services.AddSwaggerGen();
         builder.Services.RegisterCoreServices(builder.Configuration, "api");
         builder.Services.RegisterBusinessLogic(builder.Configuration);
-        builder.Services.RegisterGrpc();
         
         RegisterOpenTelemetry(builder);
         builder.Services.AddCors(cfg =>
@@ -103,8 +102,7 @@ internal static class WebApplicationExtensions
         app.UseSwaggerUI();
         app.UseHttpsRedirection();
         app.UseAuthorization();
-        app.MapGrpcServices();
-        app.MapControllers();
+        app.MapProjectApi();
         app.UseCors();
 
         return app;
