@@ -4,5 +4,6 @@ public enum MessagingDestinationE
 {
     Worker,
     Api,
-    Admin
+    Admin,
+    Function
 }

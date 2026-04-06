@@ -7,8 +7,8 @@ public interface IIpcMessage { }
 
 
 [AttributeUsage(AttributeTargets.Class)]
-public class IpcMessageAttribute(MessagingDestinationE Destination) : Attribute
+public class IpcMessageAttribute(MessagingDestinationE destination) : Attribute
 {
-    public MessagingDestinationE Destination { get; } = Destination;
+    public MessagingDestinationE Destination { get; } = destination;
 }
 
