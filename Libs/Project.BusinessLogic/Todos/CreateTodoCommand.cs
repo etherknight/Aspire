@@ -25,21 +25,23 @@ internal class CreateTodoCommandHandler(
 
     public async Task<Option<TodoDTO>> Handle(CreateTodoCommand request, CancellationToken cancellationToken)
     {
+        using var activity = _tracer.StartActivity<CreateTodoCommandHandler>(nameof(Handle));
         _cancellation = cancellationToken;
         
         return await ValidateRequest(request)
                         .Then(validDto => CreateTodo(validDto))
                         .Then(todo => SaveTodo(todo))
                         .Then(todo => UpdateTodoId(todo, request.Todo))
-                        .Then(todo => FireEvents(todo));
+                        .Then(todo => FireEvents(todo))
+                        .EndTrace(activity);
     }
 
     private Option<TodoDTO> ValidateRequest(CreateTodoCommand request) {
         using var activity = _tracer.StartActivity<CreateTodoCommandHandler>(nameof(ValidateRequest));
         Option<TodoDTO> valid = request.Todo;
 
-        valid.Guard(() => request.Todo is not null)
-             .Guard(() => false == string.IsNullOrWhiteSpace(request.Todo?.Title))
+        valid.Guard(() => request.Todo is not null, "missingDto", "Must provide a TodoDTO")
+             .Guard(() => false == string.IsNullOrWhiteSpace(request.Todo?.Title), "requiredField", "Must provide a Title")
              .EndTrace(activity);
         
         return valid;
@@ -47,24 +49,13 @@ internal class CreateTodoCommandHandler(
 
     private Option<Todo> CreateTodo(TodoDTO validDto) {
         using var activity = _tracer.StartActivity<CreateTodoCommandHandler>(nameof(CreateTodo));
-        Todo todo = CreateTodoInternal(validDto);
-        return todo;
-    }
-
-    /// <summary>
-    /// Pointless internal method just to test out tracing.
-    /// </summary>
-    /// <param name="validDto"></param>
-    /// <returns></returns>
-    private Todo CreateTodoInternal(TodoDTO validDto) {
-        using var activity = _tracer.StartActivity<CreateTodoCommandHandler>(nameof(CreateTodoInternal));
         return new Todo() {
             Title = validDto.Title,
             DueBy = validDto.DueBy,
             IsComplete = validDto.IsComplete,
         };
     }
-
+    
     private async Task<Option<Todo>> SaveTodo(Todo todo) {
         using var activity = _tracer.StartActivity<CreateTodoCommandHandler>(nameof(SaveTodo));
         Option<Todo> result = OptionError.NotComplete;
