@@ -96,44 +96,18 @@ public class Option<TObject> {
             none(_error);
         }
     }
-    
-    // public async Task<TResult> Finally<TResult>(Func<TObject, Task<TResult>> some, Func<OptionError, TResult> none)
-    //     => IsSuccess() switch
-    //     {
-    //         true => await some(_value),
-    //         false => none(_error)
-    //     };
-    //
-    //
-    // [DebuggerStepThrough]
-    // public async Task<TResult> Finally<TResult>(Func<TObject, TResult> some, Func<OptionError, Task<TResult>> none)
-    //     => IsSuccess() switch
-    //     {
-    //         true => some(_value),
-    //         false => await none(_error)
-    //     };
-    //
-    // [DebuggerStepThrough]
-    // public async Task Finally(Func<TObject, Task> some, Func<OptionError, Task> none)
-    // {
-    //     if (IsSuccess())
-    //     {
-    //         await some(_value);
-    //     }
-    //     else
-    //     {
-    //         await none(_error);
-    //     }
-    // }
     #endregion
 
     #region Guard
     
-    public Option<TObject> Guard(Func<bool> guardFunc)
+    public Option<TObject> Guard(Func<bool> guardFunc, string condition, string message)
     {
         bool valid = guardFunc();
         if (valid is false) {
-            // TODO: Accumulate errors here.
+            if (_error.Equals(OptionError.Default)) {
+                return  OptionError.GuardError(condition, message);
+            }
+            return _error + OptionError.GuardError(condition, message);
         }
 
         return this;
@@ -143,7 +117,9 @@ public class Option<TObject> {
     {
         bool valid = await guardFunc();
         if (valid is false) {
-            // TODO: Accumulate errors here.
+            if (_error is null) {
+                
+            }
         }
 
         return this;
@@ -237,6 +213,18 @@ public static class OptionTraceExtensions {
         );
         activity.SetStatus(code);
         return option;
+    }
+    
+    public static async Task<Option<TObject>> EndTrace<TObject>(this Task<Option<TObject>> option, Activity? activity ){
+        if (activity is null) {
+            return await option;
+        }
+        ActivityStatusCode code = await option.Finally(
+            _ => ActivityStatusCode.Ok, 
+            _ => ActivityStatusCode.Error
+        );
+        activity.SetStatus(code);
+        return await option;
     }
     
     public static void EndTraceOk(this Activity? activity){ 

@@ -54,6 +54,7 @@ public enum OptionErrorCodeE
 /// </summary>
 [method: DebuggerStepThrough]
 public sealed class OptionError(OptionErrorCodeE code, string message, string? file, string? member, int? line)
+ : IEquatable<OptionError>
 {
     private readonly string? _file = file;
     private readonly string? _member = member;
@@ -64,6 +65,8 @@ public sealed class OptionError(OptionErrorCodeE code, string message, string? f
     public static OptionError GuardError(string condition, string? message) => new(condition, message);
     public static OptionError FromException(Exception ex, OptionErrorCodeE code = OptionErrorCodeE.EXCEPTION) => new(code, ex.Message, null, null, null);
     
+    public static OptionError operator +(OptionError left, OptionError right)
+        => new([left, right]);
     /// <summary>
     /// The error code.
     /// </summary>
@@ -103,15 +106,17 @@ public sealed class OptionError(OptionErrorCodeE code, string message, string? f
     {}
     
     #region INTERFACE: IEquatable
-    public override bool Equals(object? value)
-    {
-        return value is OptionError error &&
-              Code == error.Code &&
-              Message == error.Message &&
-              Errors.Count == error.Errors.Count;
+    public bool Equals(OptionError? other) {
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return Code == other.Code;
+    }
+    public override bool Equals(object? value) {
+        return ReferenceEquals(this, value) || value is OptionError other && Equals(other);
     }
 
-    public override int GetHashCode()
-        => HashCode.Combine(Code, Message);
+    public override int GetHashCode() {
+        return HashCode.Combine((int)Code, Errors, Exception);
+    }
     #endregion
 }
