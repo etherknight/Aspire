@@ -13,11 +13,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\Libs\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
+    <ProjectReference Include="..\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\Records\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

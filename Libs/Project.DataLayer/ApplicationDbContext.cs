@@ -10,14 +10,32 @@ public interface IApplicationDbContext {
     Task<Option<bool>> Init(CancellationToken token);
 
     public DbSet<Todo> Todos { get; }
+    public DbSet<Contact> Contacts { get; }
+    public DbSet<CustomFieldDefinition> CustomFieldDefinitions { get; }
+    public DbSet<CustomFieldValue> CustomFieldValues { get; }
 }
 
 internal class ApplicationDbContext : DbContext, IApplicationDbContext {
-    
+
     public required DbSet<Todo> Todos { get; set; }
+    public required DbSet<Contact> Contacts { get; set; }
+    public required DbSet<CustomFieldDefinition> CustomFieldDefinitions { get; set; }
+    public required DbSet<CustomFieldValue> CustomFieldValues { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
         : base(options) {
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Contact ↔ CustomFieldValue many-to-many via an explicit join table.
+        // For each future entity that needs custom fields, add a similar HasMany/WithMany
+        // block here — EF will create a separate join table (e.g. lead_custom_field_value)
+        // with its own FK constraints, so CustomFieldValue stays free of nullable FK columns.
+        modelBuilder.Entity<Contact>()
+            .HasMany(c => c.CustomFieldValues)
+            .WithMany()
+            .UsingEntity(j => j.ToTable("contact_custom_field_value"));
     }
 
     public new async Task<Option<bool>> SaveChangesAsync(CancellationToken token) {
@@ -44,8 +62,4 @@ internal class ApplicationDbContext : DbContext, IApplicationDbContext {
 
         return result;
     }
-
-    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    //    => optionsBuilder
-    //            .UseSnakeCaseNamingConvention();
 }

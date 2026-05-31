@@ -9,7 +9,7 @@ namespace Project.Api.Controllers;
 /// <summary>
 /// Invoke system commands.
 /// </summary>
-public class SystemController : IApiRouteBuilder{
+public class SystemApi : IApiRouteBuilder{
     const string apiName = "system";
     
     public void Map(IEndpointRouteBuilder app) {

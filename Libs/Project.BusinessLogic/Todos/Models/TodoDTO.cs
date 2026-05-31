@@ -8,7 +8,7 @@ namespace Project.BusinessLogic.Todos.Models;
 
 public class TodoDTO : IProjection<Todo, TodoDTO>
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
 
     public required string Title { get; set; }
 
