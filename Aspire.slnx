@@ -12,7 +12,9 @@
     <Project Path="Libs/Project.Shared.Interfaces.Tests/Project.Shared.Interfaces.Tests.csproj" />
     <Project Path="Libs/Project.Shared.Interfaces/Project.Shared.Interfaces.csproj" />
   </Folder>
-  <Folder Name="/Tools/" />
+  <Folder Name="/Tools/">
+    <Project Path="Tools/Project.Tools.DataGenerator/Project.Tools.DataGenerator.csproj" />
+  </Folder>
   <Project Path="Orchestation/Orchestation.csproj" />
   <Project Path="Project.Api/Project.Api.csproj" />
   <Project Path="Project.Worker/Project.Worker.csproj" />
