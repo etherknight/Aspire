@@ -1,0 +1,7 @@
+﻿<Project Sdk="MSTest.Sdk/4.0.1">
+
+    <PropertyGroup>
+        <UseVSTest>true</UseVSTest>
+    </PropertyGroup>
+
+</Project>

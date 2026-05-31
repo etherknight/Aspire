@@ -16,12 +16,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MediatR" />
     <PackageReference Include="Npgsql.OpenTelemetry"/>
     <PackageReference Include="OpenTelemetry" />
     <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     <PackageReference Include="RabbitMQ.Client" />
+    <PackageReference Include="Rebus" />
     <PackageReference Include="Swashbuckle.AspNetCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>
@@ -35,8 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\Libs\Project.Core.Services\Project.Core.Services.csproj" />
-    <ProjectReference Include="$(SolutionDir)\Libs\Project.BusinessLogic\Project.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Libs\Project.BusinessLogic\Project.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Libs\Project.Core.Services\Project.Core.Services.csproj" />
   </ItemGroup>
   
 </Project>

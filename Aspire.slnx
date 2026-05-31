@@ -3,10 +3,13 @@
     <Project Path="Functions\Project.Functions\Project.Functions.csproj" />
   </Folder>
   <Folder Name="/Libs/">
+    <Project Path="Libs/Project.BusinessLogic.Tests/Project.BusinessLogic.Tests.csproj" />
     <Project Path="Libs/Project.BusinessLogic/Project.BusinessLogic.csproj" />
     <Project Path="Libs/Project.Core.Services.Interfaces/Project.Core.Services.Interfaces.csproj" />
+    <Project Path="Libs/Project.Core.Services.Tests/Project.Core.Services.Tests.csproj" />
     <Project Path="Libs/Project.Core.Services/Project.Core.Services.csproj" />
     <Project Path="Libs/Project.DataLayer/Project.Core.DataLayer.csproj" />
+    <Project Path="Libs/Project.Shared.Interfaces.Tests/Project.Shared.Interfaces.Tests.csproj" />
     <Project Path="Libs/Project.Shared.Interfaces/Project.Shared.Interfaces.csproj" />
   </Folder>
   <Folder Name="/Tools/" />

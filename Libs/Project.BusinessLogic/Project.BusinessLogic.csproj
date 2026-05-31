@@ -6,9 +6,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="$(SolutionDir)\Libs\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
-    <ProjectReference Include="$(SolutionDir)\Libs\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
-    <ProjectReference Include="$(SolutionDir)\Libs\Project.DataLayer\Project.Core.DataLayer.csproj" />
+    <ProjectReference Include="..\Project.Shared.Interfaces\Project.Shared.Interfaces.csproj" />
+    <ProjectReference Include="..\Project.Core.Services.Interfaces\Project.Core.Services.Interfaces.csproj" />
+    <ProjectReference Include="..\Project.DataLayer\Project.Core.DataLayer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
