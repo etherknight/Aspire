@@ -7,12 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "gen:proto": "node scripts/gen-proto.js"
+    "preview": "vite preview"
   },
   "dependencies": {
-    "@protobuf-ts/runtime": "^2.11.1",
-    "grpc-web": "^2.0.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6"
   },
@@ -22,23 +19,13 @@
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react-swc": "^4.3.1",
-    "eslint": "^10.4.1",
+    "eslint": "^10.4.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
-    "protoc-gen-grpc-web": "^1.5.0",
-    "protoc-gen-js": "^3.21.4-4",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.60.0",
     "vite": "^8.0.14"
   },
-  "packageManager": "yarn@4.15.0",
-  "dependenciesMeta": {
-    "protoc@32.1.0": {
-      "unplugged": true
-    },
-    "ts-proto@2.7.7": {
-      "unplugged": true
-    }
-  }
+  "packageManager": "yarn@4.15.0"
 }
